@@ -1,0 +1,30 @@
+body {
+    font-family: Arial, sans-serif;
+}
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+}
+footer{
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+}
+img {
+    width: 300px;
+}
+table {
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background-color: #f4f4f4;
+}
