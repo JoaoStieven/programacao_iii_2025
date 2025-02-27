@@ -1,22 +1,85 @@
-<!-- defina um documento html
-        No documento, inclua cabeçalho, corpo e rodapé,
-        No cabeçalho, definir um titulo para a pagina
-        No corpo da pagina inclua um paragrafo com texto:
-        Hello world!!!
--->
-    
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Revisão - Programação III - 2025</title>
+    <link rel="stylesheet" href="estilo.css">
+    <style>
+        .caixa {
+            border-style: solid;
+            border-width: 1px;
+        }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 </head>
+
 <body>
 
-    <h1>Hello World !!!!!</h1>
-    
+    <h1 style="text-align: center;">Cadastro de Veículos</h1>
+
+
+    <div class="caixa" style="text-align: center; width: 74%; margin: 2%; padding: 2%;">
+        <label for="codigo"> Código: </label>
+        <input type="number" id="codigo" value="">
+        <br><br>
+        <label for="modelo"> Modelo: </label>
+        <input type="text" id="modelo" value="">
+        <br><br>
+        <label for="fabricante"> Fabricante: </label>
+        <input type="text" id="fabricante" value="">
+    </div>
+
+    <div class="caixa" style="text-align: center; width: 35%; margin: 2%; float: left; padding: 1%; padding-block: 1.4%;">
+        <label for="Situação"> Situação: </label>
+        <input type="checkbox" id="situacao" value="">
+        <br><br>
+        <label for="valor"> Valor: </label>
+        <input type="number" id="valor" value="">
+        <br><br>
+        <label for="data"> Data: </label>
+        <input type="date" id="data" value="">
+    </div>
+
+    <div class="caixa"
+        style="text-align: center; width: 35%; margin: 2%; float: left;  padding-block: 0.93%;">
+        <p>Observações:</p>
+        <textarea name="" id="obs" rows="4" cols="32"></textarea>
+    </div>
+
+
+    <div id="botoes" style="clear: both; margin-top: 15%; margin-left: 38%; ">
+        <button type="button" id="cadastrar">Cadastrar</button>
+        <button type="button" id="limpar">Limpar</button>
+    </div>
+
+
 </body>
 <footer>
-   <h3>Rodapé da página!</h3>
+    <h3>Rodapé da página!</h3>
 </footer>
+
+<script type="text/javascript">
+
+    $("#cadastrar").click(function(){
+        var campo_codigo = document.getElementById("codigo").value;
+        if(campo_codigo > 0 && campo_codigo <=10000){
+alert("certo");
+        }
+        else{
+            alert("Código Inválido !!!");
+        }
+    });
+
+    $("#limpar").click(function(){
+        document.getElementById('codigo').value = '';
+        document.getElementById('modelo').value = '';
+        document.getElementById('fabricante').value = '';
+        document.getElementById('valor').value = '';
+        document.getElementById('situacao').checked = false;
+        document.getElementById('data').value = '';
+        document.getElementById('obs').value = '';
+    })
+</script>
+
 </html>
