@@ -10,27 +10,34 @@
             border-style: solid;
             border-width: 1px;
         }
+
+        .titutab {
+            background-color: rgb(177, 177, 177);
+        }
     </style>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 </head>
 
 <body>
 
-    <h1 style="text-align: center;">Cadastro de Veículos</h1>
+    <h1 style="margin-left: 29%;">Cadastro de Veículos</h1>
 
 
-    <div class="caixa" style="text-align: center; width: 74%; margin: 2%; padding: 2%;">
+    <div class="caixa" style="text-align: center; width: 72%; margin: 2%; padding: 2%;">
         <label for="codigo"> Código: </label>
         <input type="number" id="codigo" value="">
         <br><br>
         <label for="modelo"> Modelo: </label>
         <input type="text" id="modelo" value="">
         <br><br>
-        <label for="fabricante"> Fabricante: </label>
-        <input type="text" id="fabricante" value="">
+        <div style="margin-right: 24px;">
+            <label for="fabricante"> Fabricante:</label>
+            <input type="text" id="fabricante" value="">
+        </div>
     </div>
 
-    <div class="caixa" style="text-align: center; width: 35%; margin: 2%; float: left; padding: 1%; padding-block: 1.4%;">
+    <div class="caixa"
+        style="text-align: center; width: 35%; margin: 2%; float: left; padding: 1%; padding-block: 1.4%;">
         <label for="Situação"> Situação: </label>
         <input type="checkbox" id="situacao" value="">
         <br><br>
@@ -41,37 +48,84 @@
         <input type="date" id="data" value="">
     </div>
 
-    <div class="caixa"
-        style="text-align: center; width: 35%; margin: 2%; float: left;  padding-block: 0.93%;">
+    <div class="caixa" style="text-align: center; width: 35%; margin: 2%; float: left;  padding-block: 0.93%;">
         <p>Observações:</p>
         <textarea name="" id="obs" rows="4" cols="32"></textarea>
     </div>
 
+    <div id="tabela">
+        <table id="tabelaVeiculos" style="width: 76.6%; margin-left: 1.7%; border-color: black;">
+            <tr>
+                <th scope="col" class="titutab">Código</th>
+                <th scope="col" class="titutab">Modelo</th>
+                <th scope="col" class="titutab">Data</th>
+                <th scope="col" class="titutab">Valor</th>
+            </tr>
+            <tbody id="corpoTabela">
 
-    <div id="botoes" style="clear: both; margin-top: 15%; margin-left: 38%; ">
-        <button type="button" id="cadastrar">Cadastrar</button>
-        <button type="button" id="limpar">Limpar</button>
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div id="botoes" style="clear: both; margin-top: 3%; margin-left: 36%;">
+        <button type="button" id="cadastrar" style="background-color: rgb(177, 177, 177);">Cadastrar</button>
+        <button type="button" id="limpar" style="background-color: rgb(177, 177, 177);">Limpar</button>
     </div>
 
 
 </body>
-<footer>
-    <h3>Rodapé da página!</h3>
-</footer>
+
 
 <script type="text/javascript">
 
-    $("#cadastrar").click(function(){
+    $("#cadastrar").click(function () {
         var campo_codigo = document.getElementById("codigo").value;
-        if(campo_codigo > 0 && campo_codigo <=10000){
-alert("certo");
+        var campo_modelo = document.getElementById("modelo").value.length;
+        var campo_valor = document.getElementById("valor").value;
+        var campo_data = new Date(document.getElementById("data").value);
+        var dataAtual = new Date();
+        dataAtual.setHours(0, 0, 0, 0);
+        if (campo_codigo > 0 && campo_codigo <= 10000) {
         }
-        else{
+        else {
             alert("Código Inválido !!!");
+            return;
         }
-    });
+        if (campo_modelo > 0 && campo_modelo <= 1000) {
+        }
+        else {
+            alert("Modelo Inválido !!!");
+            return;
+        }
+        if (campo_valor >= 1000 && campo_valor <= 10000.00) {
+        }
+        else {
+            alert("Valor Inválido !!!");
+            return;
+        }
+        if (campo_data <= dataAtual) {
+        }
+        else {
+            alert("Data Inválida !!!");
+            return;
+        }
 
-    $("#limpar").click(function(){
+        var corpoTabela = document.getElementById("corpoTabela");
+        var novaLinha = corpoTabela.insertRow();
+
+        var celula1 = novaLinha.insertCell(0);
+        var celula2 = novaLinha.insertCell(1);
+        var celula3 = novaLinha.insertCell(2);
+        var celula4 = novaLinha.insertCell(3);
+
+        celula1.innerHTML = codigo.value;
+        celula2.innerHTML = modelo.value;
+        celula3.innerHTML = data.value;
+        celula4.innerHTML = valor.value;
+
         document.getElementById('codigo').value = '';
         document.getElementById('modelo').value = '';
         document.getElementById('fabricante').value = '';
@@ -79,6 +133,22 @@ alert("certo");
         document.getElementById('situacao').checked = false;
         document.getElementById('data').value = '';
         document.getElementById('obs').value = '';
+
+    });
+
+    $("#limpar").click(function () {
+        document.getElementById('codigo').value = '';
+        document.getElementById('modelo').value = '';
+        document.getElementById('fabricante').value = '';
+        document.getElementById('valor').value = '';
+        document.getElementById('situacao').checked = false;
+        document.getElementById('data').value = '';
+        document.getElementById('obs').value = '';
+
+        var corpoTabela = document.getElementById("corpoTabela");
+            while (corpoTabela.rows.length > 0) {
+                corpoTabela.deleteRow(0);
+            }
     })
 </script>
 
