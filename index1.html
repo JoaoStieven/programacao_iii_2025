@@ -11,21 +11,28 @@
          
             <div id="app">
                 <form id="formulario1">
-                    <h2>Listagem de Jogadores</h2>
                     <ul>
                         <li><label>{{jogadores[0].nickname}}</label></li>
                         <li><label>{{jogadores[1].qtd_estrela}}</label></li>
                         <li><label>{{jogadores[2].senha}}</label></li>
+                        <li><label>{{jogadores[jogadores.length - 1].nickname}}
+                              {{jogadores[jogadores.length - 1].qtd_estrela}}
+                              {{jogadores[jogadores.length - 1].senha}}</label></li>
                     </ul>  
                     
-                    
+                    <h3>Listagem de Joagadores</h3>
                     <ul id="example-1">
-                        <li v-for="j in jogadores" :key="j.nickname">
-                          {{ j.nickname }} {{ j.senha }} {{ j.qtd_estrela }}
+                        <li v-for="j in jogadores" :key="j.nickname" >
+                           <span style="font-weight: bold;"> {{ j.nickname }}</span>: {{ j.senha }} {{ j.qtd_estrela }}
                         </li>
                     </ul>
 
-
+                    <h3>Listagem de Patentes</h3>
+                    <ol>
+                        <li v-for="p in patentes" :key="p.descricao">
+                            <span style="font-weight: bold;">{{ p.codigo }}</span>- {{ p.descricao }}
+                        </li>
+                    </ol>
 
                     <ul id="example-2">
                         <li v-for="j in jogadores" :key="j.nickname">
