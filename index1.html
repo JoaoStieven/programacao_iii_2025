@@ -30,6 +30,13 @@
                     </ul>
 
                     <h3>Listagem de Patentes</h3>
+                    <label for="codigo"> Código:</label>
+                    <input type="number" id="codigo" value="" style="margin-left: 68px;">
+                    <br><br>
+                    <label for="descricao"> Descrição Patente:</label>
+                    <input type="text" id="descricaPat" value="">
+                    <br>
+                    <button type="button" id="addPatente" style="background-color: rgb(177, 177, 177);"></button>
                     <ol>
                         <li v-for="p in patentes" :key="p.codigo">
                             <span style="font-weight: bold;">{{ p.codigo }}</span>- {{ p.descricao }}
