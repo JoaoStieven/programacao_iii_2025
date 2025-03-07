@@ -28,20 +28,23 @@
                            <span style="font-weight: bold;"> {{ j.nickname }}</span>: {{ j.senha }} {{ j.qtd_estrela }}
                         </li>
                     </ul>
-
-                    <h3>Listagem de Patentes</h3>
-                    <label for="codigo"> Código:</label>
-                    <input type="number" id="codigo" value="" style="margin-left: 68px;">
+                    <br><hr>
+                    <h3>Inclusão de Patentes</h3>
+                    <label for="codigoPat"> Código:</label>
+                    <input type="number" id="codigoPat"  v-model="nova_patente.codigo" value="" style="margin-left: 68px;">
                     <br><br>
-                    <label for="descricao"> Descrição Patente:</label>
-                    <input type="text" id="descricaPat" value="">
-                    <br>
-                    <button type="button" id="addPatente" style="background-color: rgb(177, 177, 177);"></button>
+                    <label for="descricaoPat"> Descrição Patente:</label>
+                    <input type="text" id="descricaoPat" v-model="nova_patente.descricao" value="">
+                    <br><br>
+                    <button @click="addPatente" type="button" id="addPatente" style="background-color: rgb(177, 177, 177); margin-left: 25px;">Inserir Patente</button>
                     <ol>
                         <li v-for="p in patentes" :key="p.codigo">
                             <span style="font-weight: bold;">{{ p.codigo }}</span>- {{ p.descricao }}
                         </li>
                     </ol>
+
+                    <br><hr>
+
 
                     <h3>Joagadores 10 Estrelas</h3>
                     <ul id="example-2">
@@ -112,13 +115,29 @@
                                                      qtd_estrela: 10, 
                                                      senha: '123',
                                                      patente: 'Diamante'}}                 
-                            ]                         
-            };
-        
+                            ],
+                nova_patente: {codigo: '', descricao: ''}   
+                                   
+            }
+
             new Vue({ 
                 el: '#app', 
                 data: dados,
                 methods: { 
+
+                    addPatente: function () {
+                        var input_codigo = this.nova_patente.codigo;  
+                        var input_descrição = this.nova_patente.descricao.trim();
+
+                        this.patentes.push({codigo: input_codigo, 
+                                                 descricao: input_descrição}
+                                                );
+                        
+                        this.nova_patente.codigo = '';
+                        this.nova_patente.descricao = '';
+
+                        alert('Novo Jogador cadastrado !');
+                    }
 
                 }
             }); 
