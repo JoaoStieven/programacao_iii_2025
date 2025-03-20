@@ -42,6 +42,12 @@
             </tbody>
         </table>
         <form id="formulario">
+            <p v-if="errors.length">
+                <b>Por favor, corrija o(s) seguinte(s) erro(s):</b>
+            <ul>
+                <li v-for="error in errors">{{ error }}</li>
+            </ul>
+            </p>
             <h3>Formulário para cadastrar novo jogador</h3>
             <div class="form-group">
                 <label for="inputIndice">#:</label>
@@ -162,28 +168,29 @@
 
 
                     if (this.novo_jogador.nickname.trim().length > 3 &&
+                        this.novo_jogador.nickname.trim().length <= 8 &&
                         this.novo_jogador.qtd_estrela > 0 &&
                         this.novo_jogador.qtd_estrela < 101 &&
-                        this.novo_jogador.senha.length > 3 &&
+                        this.novo_jogador.senha.length == 6 &&
                         data_correta == true &&
                         !isNaN(parseInt(this.novo_jogador.patente.codigo))) {
                         return true;
                     }
 
-                    if (this.novo_jogador.nickname.trim().length <= 3) {
-                        this.errors.push('O nickname é obrigatório.');
+                    if (this.novo_jogador.nickname.trim().length < 3 || this.novo_jogador.nickname.trim().length >= 8) {
+                        this.errors.push('O nickname é obrigatório e deve ter de 4 a 8 caracteres!!!');
                     }
 
                     if (this.novo_jogador.qtd_estrela < 1 || this.novo_jogador.qtd_estrela > 100) {
                         this.errors.push('Quantidade inválida de estrelas.');
                     }
 
-                    if (this.novo_jogador.senha.trim().length <= 3) {
-                        this.errors.push('Informe senha com 4 dígitos.');
+                    if (this.novo_jogador.senha.trim().length <= 5 || this.novo_jogador.senha.trim().length >= 7) {
+                        this.errors.push('Informe senha com 6 dígitos.');
                     }
 
                     if (data_correta == false) {
-                        this.errors.push('Informe data.');
+                        this.errors.push('Informe data correta!!!');
                     }
                     if (isNaN(parseInt(this.novo_jogador.patente.codigo))) {
                         this.errors.push('A Patente é obrigatória.');
@@ -191,55 +198,55 @@
                 },
                 addJogador: function () {
                     if (this.checkForm()) {
-                    
-                    var input_indice = this.novo_jogador.indice;
-                    var input_nickname = this.novo_jogador.nickname.trim();
-                    var input_data_nascimento = this.novo_jogador.data_nascimento.trim();
-                    var input_qtd_estrela = this.novo_jogador.qtd_estrela;
-                    var input_senha = this.novo_jogador.senha.trim();
-                    var input_status = this.novo_jogador.status;
-                    var select_patente = this.novo_jogador.patente;
-                    var select_endereco = this.novo_jogador.endereco;
-                    var select_arma = this.novo_jogador.arma;
 
-                    //Atividade 5 - testar o tamanho do nickname e senha. Não permitir tamanhos menores do que 4 para ambos.
+                        var input_indice = this.novo_jogador.indice;
+                        var input_nickname = this.novo_jogador.nickname.trim();
+                        var input_data_nascimento = this.novo_jogador.data_nascimento.trim();
+                        var input_qtd_estrela = this.novo_jogador.qtd_estrela;
+                        var input_senha = this.novo_jogador.senha.trim();
+                        var input_status = this.novo_jogador.status;
+                        var select_patente = this.novo_jogador.patente;
+                        var select_endereco = this.novo_jogador.endereco;
+                        var select_arma = this.novo_jogador.arma;
 
-                   
-                            //documentação sobre o parseInt
-                            //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
-                            if (isNaN(parseInt(input_indice))) {
+                        //Atividade 5 - testar o tamanho do nickname e senha. Não permitir tamanhos menores do que 4 para ambos.
 
-                                this.jogadores.push({
-                                    nickname: input_nickname,
-                                    data_nascimento: input_data_nascimento,
-                                    qtd_estrela: input_qtd_estrela,
-                                    status: input_status,
-                                    senha: input_senha,
-                                    patente: select_patente,
-                                    arma: select_arma,
-                                    endereco: select_endereco
-                                }
-                                );
-                                alert('Novo Jogador cadastrado !');
 
-                            } else {
+                        //documentação sobre o parseInt
+                        //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+                        if (isNaN(parseInt(input_indice))) {
 
-                                this.jogadores[input_indice] = {
-                                    nickname: input_nickname,
-                                    data_nascimento: input_data_nascimento,
-                                    qtd_estrela: input_qtd_estrela,
-                                    status: input_status,
-                                    senha: input_senha,
-                                    patente: select_patente,
-                                    arma: select_arma,
-                                    endereco: select_endereco
-                                };
-
-                                alert('Jogador alterado !');
+                            this.jogadores.push({
+                                nickname: input_nickname,
+                                data_nascimento: input_data_nascimento,
+                                qtd_estrela: input_qtd_estrela,
+                                status: input_status,
+                                senha: input_senha,
+                                patente: select_patente,
+                                arma: select_arma,
+                                endereco: select_endereco
                             }
-                            this.cleanFormulario();
+                            );
+                            alert('Novo Jogador cadastrado !');
 
                         } else {
+
+                            this.jogadores[input_indice] = {
+                                nickname: input_nickname,
+                                data_nascimento: input_data_nascimento,
+                                qtd_estrela: input_qtd_estrela,
+                                status: input_status,
+                                senha: input_senha,
+                                patente: select_patente,
+                                arma: select_arma,
+                                endereco: select_endereco
+                            };
+
+                            alert('Jogador alterado !');
+                        }
+                        this.cleanFormulario();
+
+                    } else {
                         alert("Formulário incompleto, veja a lista de erros !!")
                     }
                 },
