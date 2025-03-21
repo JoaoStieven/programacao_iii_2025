@@ -55,7 +55,7 @@
             </div>
             <div class="form-group">
                 <label for="inputNickname">Nickname:</label>
-                <input type="text" v-model="novo_jogador.nickname" class="form-control" id="inputNickname">
+                <input type="text" v-model="novo_jogador.nickname" maxlength="8" class="form-control" id="inputNickname" placeholder="Entre 4 a 8 caracteres">
             </div>
             <div class="form-group">
                 <label for="inputDtNasc">D. Nascimento:</label>
@@ -64,7 +64,7 @@
             </div>
             <div class="form-group">
                 <label for="inputQtdEstrela">Quantidade de Estrelas:</label>
-                <input type="number" v-model="novo_jogador.qtd_estrela" class="form-control" id="inputQtdEstrela">
+                <input type="number" v-model="novo_jogador.qtd_estrela" class="form-control" id="inputQtdEstrela" placeholder="Entre 1 a 100">
             </div>
             <!-- https://br.vuejs.org/v2/guide/forms.html -->
             <div class="form-group">
@@ -141,7 +141,7 @@
 
             jogadores: [{ nickname: 'joaozinho', data_nascimento: '', qtd_estrela: 5, status: true, senha: '123', patente: { codigo: 1, descricao: 'Bronze' }, arma: { codigo: 4, descricao: 'Revolver 38' }, endereco: { id: 0, cep: '99010000' } }],
 
-            novo_jogador: { indice: '', nickname: '', data_nascimento: '', qtd_estrela: 0, status: false, senha: '', patente: '', arma: '', endereco: '' },
+            novo_jogador: { indice: '', nickname: '', data_nascimento: '', qtd_estrela: '', status: false, senha: '', patente: '', arma: '', endereco: '' },
 
             errors: []
         };
@@ -167,33 +167,39 @@
                     this.errors = [];
 
 
-                    if (this.novo_jogador.nickname.trim().length > 3 &&
-                        this.novo_jogador.nickname.trim().length <= 8 &&
+                    if ((this.novo_jogador.nickname.trim().length >= 4 ||
+                        this.novo_jogador.nickname.trim().length <= 8) &&
                         this.novo_jogador.qtd_estrela > 0 &&
                         this.novo_jogador.qtd_estrela < 101 &&
                         this.novo_jogador.senha.length == 6 &&
                         data_correta == true &&
-                        !isNaN(parseInt(this.novo_jogador.patente.codigo))) {
+                        !isNaN(parseInt(this.novo_jogador.patente.codigo))&&
+                        !isNaN(parseInt(this.novo_jogador.arma.codigo))) {
                         return true;
                     }
 
-                    if (this.novo_jogador.nickname.trim().length < 3 || this.novo_jogador.nickname.trim().length >= 8) {
+                    if (this.novo_jogador.nickname.trim().length <= 3 || this.novo_jogador.nickname.trim().length >= 9) {
                         this.errors.push('O nickname é obrigatório e deve ter de 4 a 8 caracteres!!!');
-                    }
-
-                    if (this.novo_jogador.qtd_estrela < 1 || this.novo_jogador.qtd_estrela > 100) {
-                        this.errors.push('Quantidade inválida de estrelas.');
-                    }
-
-                    if (this.novo_jogador.senha.trim().length <= 5 || this.novo_jogador.senha.trim().length >= 7) {
-                        this.errors.push('Informe senha com 6 dígitos.');
                     }
 
                     if (data_correta == false) {
                         this.errors.push('Informe data correta!!!');
                     }
+
+                    if (this.novo_jogador.qtd_estrela < 1 || this.novo_jogador.qtd_estrela > 100) {
+                        this.errors.push('Quantidade inválida de estrelas!!!');
+                    }
+
                     if (isNaN(parseInt(this.novo_jogador.patente.codigo))) {
-                        this.errors.push('A Patente é obrigatória.');
+                        this.errors.push('A Patente deve ser selecionada!!!');
+                    }
+
+                    if (isNaN(parseInt(this.novo_jogador.arma.codigo))) {
+                        this.errors.push('A Arma deve ser selecionada!!!');
+                    }
+
+                    if (this.novo_jogador.senha.trim().length <= 5 || this.novo_jogador.senha.trim().length >= 7) {
+                        this.errors.push('Informe senha com 6 dígitos.');
                     }
                 },
                 addJogador: function () {
@@ -278,7 +284,7 @@
                     this.novo_jogador.indice = '';
                     this.novo_jogador.nickname = '';
                     this.novo_jogador.data_nascimento = '';
-                    this.novo_jogador.qtd_estrela = 0;
+                    this.novo_jogador.qtd_estrela = '';
                     this.novo_jogador.senha = '';
                     this.novo_jogador.status = false;
                     this.novo_jogador.patente = '';
@@ -291,7 +297,7 @@
                     this.novo_jogador.indice = '';
                     this.novo_jogador.nickname = '';
                     this.novo_jogador.data_nascimento = '';
-                    this.novo_jogador.qtd_estrela = 0;
+                    this.novo_jogador.qtd_estrela = '';
                     this.novo_jogador.senha = '';
                     this.novo_jogador.status = false;
                     this.novo_jogador.patente = '';
