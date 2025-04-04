@@ -8,18 +8,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <!--
-            Exercicio de revisão.
-            Utilizar como base o arquivo Vue_crud_localstorage_objetivo.html
-
-            Adicionar o menu e uma div para Objetivos
-            Implementar uma tabela em HTML para as seguintes colunas: Id, Nome, Qtd. Pontos, Status, Alterar e Remover. Alterar a variável dados, localstorage e métodos para alterar e remover registros.
-            Implementar os campos em HTML
-            Implementar a funcionalidade de incluir novo registro.
-            Implementar a funcionalidade de alterar registro.
-            Implementar a validação manual (nome: 1 a 20 caracteres, pontos: de 1 a 10.000)
-            Implementar a remoção de registro (com confirmação)
-        -->
 </head>
 
 <body>
@@ -57,7 +45,8 @@
                                     <td>{{o.id}}</td>
                                     <td>{{o.nome}}</td>
                                     <td>{{o.qtd_pontos}}</td>
-                                    <td>{{o.status}}</td>
+                                    <td v-if="o.status"><input type="checkbox" checked disabled></td>
+                                    <td v-if="!o.status"><input type="checkbox" disabled></td>
                                     <td><button v-on:click="editObjetivo(indice)" class="btn"
                                             type="button">Alterar</button></td>
                                     <td><button v-on:click="remObjetivo(indice)" class="btn"
@@ -77,7 +66,7 @@
 
                             <div class="form-group">
                                 <label for="inputNome">Nome:</label>
-                                <input type="text" v-model="novo_objetivo.nome" class="form-control" id="inputNome">
+                                <input type="text" v-model="novo_objetivo.nome" class="form-control" id="inputNome" maxlength="20">
                             </div>
                             <div class="form-group">
                                 <label for="inputPontos">Qtd. Pontos:</label>
@@ -253,7 +242,7 @@
 
         } else {
             //se existir, realiza o parse e armazena na variável jogadores.
-            jogadores = JSON.parse(localStorage.getItem("objetivos"))
+            objetivos = JSON.parse(localStorage.getItem("objetivos"))
         }
 
         var jogadores = [];
@@ -360,41 +349,52 @@
                     var input_nome = this.novo_objetivo.nome.trim();
                     var input_qtd_pontos = this.novo_objetivo.qtd_pontos;
                     var input_status = this.novo_objetivo.status;
+                    //        Implementar a validação manual (nome: 1 a 20 caracteres, pontos: de 1 a 10.000)
 
-                    //documentação sobre o parseInt
-                    //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
-                    if (isNaN(parseInt(input_id))) {
-                        var proximo_id;
-                        if (this.objetivos.length == 0) {
-                            proximo_id = 1;
+                    if (input_nome.length > 0 && input_nome.length < 21) {
+
+                        if (input_qtd_pontos > 0 && input_qtd_pontos <= 10000) {
+                            //documentação sobre o parseInt
+                            //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+                            if (isNaN(parseInt(this.novo_objetivo.indice))) {
+                                var proximo_id;
+                                if (this.objetivos.length == 0) {
+                                    proximo_id = 1;
+                                } else {
+                                    proximo_id = (parseInt(this.objetivos[this.objetivos.length - 1].id) + 1)
+                                }
+
+                                this.objetivos.push({
+                                    id: proximo_id,
+                                    nome: input_nome,
+                                    qtd_pontos: input_qtd_pontos,
+                                    status: input_status
+                                }
+                                );
+
+
+                                alert('Novo Objetivo cadastrado !');
+
+                            } else {
+
+                                this.objetivos[this.novo_objetivo.indice] = {
+                                    id: input_id,
+                                    nome: input_nome,
+                                    qtd_pontos: input_qtd_pontos,
+                                    status: input_status
+                                };
+
+                                alert('Objetivo alterado !');
+                            }
+                            localStorage.setItem("objetivos", JSON.stringify(this.objetivos));
+                            this.cleanFormularioObjetivo();
+
                         } else {
-                            proximo_id = (parseInt(this.objetivos[this.objetivos.length - 1].id) + 1)
+                            alert("Os pontos devem ser de 1 a 10000");
                         }
-
-                        this.objetivos.push({
-                            id: proximo_id,
-                            nome: input_nome,
-                            qtd_pontos: input_qtd_pontos,
-                            status: input_status
-                        }
-                        );
-
-
-                        alert('Novo Objetivo cadastrado !');
-
                     } else {
-
-                        this.objetivos[this.novo_objetivo.id] = {
-                            id: input_id,
-                            nome: input_nome,
-                            qtd_pontos: input_qtd_pontos,
-                            status: input_status
-                        };
-
-                        alert('Objetivo alterado !');
+                        alert("O nome deve ter de 1 a 20 caracteres!!!");
                     }
-                    localStorage.setItem("objetivos", JSON.stringify(this.objetivos));
-                    this.cleanFormularioObjetivo();
 
 
                 },
@@ -403,6 +403,7 @@
                 //implementacao da questao 2
                 editObjetivo: function (param_index) {
                     this.novo_objetivo.indice = param_index;
+                    this.novo_objetivo.id = this.objetivos[param_index].id;
                     this.novo_objetivo.nome = this.objetivos[param_index].nome;
                     this.novo_objetivo.qtd_pontos = this.objetivos[param_index].qtd_pontos;
                     this.novo_objetivo.status = this.objetivos[param_index].status;
@@ -411,12 +412,24 @@
 
                 //implementacao da questao 2
                 remObjetivo: function (param_index) {
-                    
-                    this.objetivos.splice(param_index, 1);
 
-                    localStorage.setItem("objetivos", JSON.stringify(this.objetivos));
+                    var confirme = confirm("Tem certeza que deseja excluir o objetivo: " + this.objetivos[param_index].id + "?");
 
-                    alert('Removeu o Objetivo: ' + param_index);
+                    if (confirme) {
+                        this.objetivos.splice(param_index, 1);
+
+                        localStorage.setItem("objetivos", JSON.stringify(this.objetivos));
+
+                        this.novo_objetivo.indice = '';
+                        this.novo_objetivo.id = '';
+                        this.novo_objetivo.nome = '';
+                        this.novo_objetivo.qtd_pontos = '';
+                        this.novo_objetivo.status = false;
+                    }
+
+                    else {
+                        alert("Exclusão cancelada!!!")
+                    }
                 },
 
 
