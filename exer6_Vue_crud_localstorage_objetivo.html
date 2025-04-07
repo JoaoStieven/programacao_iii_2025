@@ -12,6 +12,14 @@
 
 <body>
 
+     <!--
+        Com base no exemplo Vue_crud_localstorage.html
+
+        4) Implementar o CRUD para Modo (id, nome e status).
+
+        5) Implementar o VueLidate no CRUD de Modo.
+    -->
+
     <div class="container-fluid">
         <h2>Formulários e LocalStorage</h2>
         <div class="row">
@@ -87,8 +95,52 @@
                     </div>
 
                     <div id="menu3" class="tab-pane fade">
-                        <h3>Modo</h3>
-                        <p>CRUD para Modo... </p>
+                        <h2>Listagem de Modos</h2>
+
+                        <table class="table table-striped">
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Alterar</th>
+                                <th scope="col">Remover</th>
+                            </tr>
+                            <tbody>
+                                <tr v-for="(m, indice) in modos">
+                                    <td>{{m.id}}</td>
+                                    <td>{{m.nome}}</td>
+                                    <td v-if="m.status"><input type="checkbox" checked disabled></td>
+                                    <td v-if="!m.status"><input type="checkbox" disabled></td>
+                                    <td><button v-on:click="editModo(indice)" class="btn"
+                                            type="button">Alterar</button></td>
+                                    <td><button v-on:click="remModo(indice)" class="btn"
+                                            type="button">Remover</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <form id="formularioModo">
+                            <h3>Formulário para cadastrar Modo</h3>
+                            <div>
+                                <div class="form-group">
+                                    <label for="inputId">#:</label>
+                                    <input type="text" v-model="novo_modo.id" class="form-control" id="inputId"
+                                        disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputNome">Nome:</label>
+                                    <input type="text" v-model="novo_modo.nome" class="form-control"
+                                        id="inputNome">
+                                </div>
+                                <div class="form-group">
+                                    <label for="checkStatus">Status:</label>
+                                    <input type="checkbox" v-model="novo_modo.status" id="checkStatus">
+                                </div>
+                                <button @click="addModo" class="btn btn-primary" type="button">Salvar</button>
+                                <button @click="cleanFormularioModo" class="btn btn-primary"
+                                    type="button">Limpar</button>
+                            </div>
+                        </form>
                     </div>
 
                     <div id="home" class="tab-pane fade in active">
@@ -103,6 +155,7 @@
                             <tr>
                                 <th scope="col">Id</th>
                                 <th scope="col">CEP</th>
+                                <th scope="col">Número</th>
                                 <th scope="col">Alterar</th>
                                 <th scope="col">Remover</th>
                             </tr>
@@ -110,6 +163,7 @@
                                 <tr v-for="(e, indice) in enderecos">
                                     <td>{{e.id}}</td>
                                     <td>{{e.cep}}</td>
+                                    <td>{{e.num}}</td>
                                     <td><button v-on:click="editEndereco(indice)" class="btn"
                                             type="button">Alterar</button></td>
                                     <td><button v-on:click="remEndereco(indice)" class="btn"
@@ -130,6 +184,11 @@
                                     <label for="inputCEP">CEP:</label>
                                     <input type="text" v-model="novo_endereco.cep" class="form-control"
                                         id="inputNickname">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputNUM">Número:</label>
+                                    <input type="number" v-model="novo_endereco.num" class="form-control"
+                                        id="inputNUM">
                                 </div>
                                 <div class="form-group">
                                     <label for="inputComplemento">Complemento:</label>
@@ -232,6 +291,18 @@
 
     $(document).ready(function () {
 
+        var modos = [];
+        //testa se existe o item modos no localStorage do navegador.
+        if (localStorage.getItem("modos") == null) {
+
+            //caso não exista cria o item jogadores.
+            localStorage.setItem("modos", JSON.stringify([]));
+
+        } else {
+            //se existir, realiza o parse e armazena na variável jogadores.
+            modos = JSON.parse(localStorage.getItem("modos"))
+        }
+
         //implementacao da questao 2.  
         var objetivos = [];
         //testa se existe o item jogadores no localStorage do navegador.
@@ -273,7 +344,9 @@
             "jogadores": jogadores,
             "novo_jogador": { indice: '', nickname: '', data_nascimento: '', qtd_estrela: '', status: true, senha: '', endereco: {} },
             "enderecos": enderecos,
-            "novo_endereco": { indice: '', id: '', cep: '', complemento: '' },
+            "novo_endereco": { indice: '', id: '', cep: '', num: '', complemento: '' },
+            "modos": modos,
+            "novo_modo": { indice: '', id: '', nome: '', status: false},
             "objetivos": objetivos,
             "novo_objetivo": { indice: '', id: '', nome: '', qtd_pontos: '', status: false }
         };
@@ -293,9 +366,90 @@
             data: dados,
             methods: {
 
+
+                addModo: function () {
+                    var input_id = this.novo_modo.id;
+                    var input_nome = this.novo_modo.nome.trim();
+                    var input_status = this.novo_modo.status;
+
+                     //documentação sobre o parseInt
+                        //https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+                        if (isNaN(parseInt(this.novo_modo.indice))) {
+                            var proximo_id;
+                            if (this.modos.length == 0) {
+                                proximo_id = 1;
+                            } else {
+                                proximo_id = (parseInt(this.modos[this.modos.length - 1].id) + 1)
+                            }
+                            this.modos.push({
+                                id: proximo_id,
+                                nome: input_nome,
+                                status: input_status
+                            }
+                            );
+
+
+                            alert('Novo Modo cadastrado !');
+
+                        } else {
+
+
+                            this.modos[this.novo_modo.indice] = {
+                                id: input_id,
+                                nome: input_nome,
+                                status: input_status
+                            };
+                            alert('Modo alterado !');
+
+
+                        }
+                        localStorage.setItem("modos", JSON.stringify(this.modos));
+
+                        this.cleanFormularioModo();
+
+                },
+
+                editModo: function (param_index) {
+                    this.novo_modo.indice = param_index;
+                    this.novo_modo.id = this.modos[param_index].id;
+                    this.novo_modo.nome = this.modos[param_index].nome;
+                    this.novo_modo.status = this.modos[param_index].status;
+                },
+
+                remModo: function (param_index) {
+
+                    var confirme = confirm("Tem certeza que deseja excluir o modo: " + this.modos[param_index].id + "?");
+
+
+                    if (confirme) {
+                        this.modos.splice(param_index, 1);
+
+                        localStorage.setItem("modos", JSON.stringify(this.modos));
+
+                        this.novo_modo.indice = '';
+                        this.novo_modo.id = '';
+                        this.novo_modo.nome = '';
+                        this.novo_modo.status = false;
+                    }
+
+                    else {
+                        alert("Exclusão cancelada!!!")
+                    }
+                    
+                },
+
+                cleanFormularioModo: function () {
+
+                    this.novo_modo.indice = '';
+                    this.novo_modo.id = '';
+                    this.novo_modo.nome = '';
+                    this.novo_modo.status = false;                
+                },
+
                 addEndereco: function () {
                     var input_id = this.novo_endereco.id;
                     var input_cep = this.novo_endereco.cep.trim();
+                    var input_num = this.novo_endereco.num;
                     var input_complemento = this.novo_endereco.complemento.trim();
 
                     //Atividade 5 - testar o tamanho do nickname e senha. Não permitir tamanhos menores do que 4 para ambos.
@@ -313,6 +467,7 @@
                             this.enderecos.push({
                                 id: proximo_id,
                                 cep: input_cep,
+                                num: input_num,
                                 complemento: input_complemento
                             }
                             );
@@ -326,6 +481,7 @@
                             this.enderecos[this.novo_endereco.indice] = {
                                 id: input_id,
                                 cep: input_cep,
+                                num: input_num,
                                 complemento: input_complemento
                             };
                             alert('Endereço alterado !');
@@ -437,6 +593,7 @@
                     this.novo_endereco.indice = param_index;
                     this.novo_endereco.id = this.enderecos[param_index].id;
                     this.novo_endereco.cep = this.enderecos[param_index].cep;
+                    this.novo_endereco.num = this.enderecos[param_index].num;
                     this.novo_endereco.complemento = this.enderecos[param_index].complemento;
                 },
 
@@ -451,7 +608,14 @@
 
                     localStorage.setItem("enderecos", JSON.stringify(this.enderecos));
 
+                    this.novo_endereco.indice = '';
+                    this.novo_endereco.id = '';
+                    this.novo_endereco.cep = '';
+                    this.novo_endereco.num = '';
+                    this.novo_endereco.complemento = '';
+
                     alert('Removeu o Endereco: ' + param_index);
+                    
                 },
 
                 cleanFormularioEndereco: function () {
@@ -459,6 +623,7 @@
                     this.novo_endereco.indice = '';
                     this.novo_endereco.id = '';
                     this.novo_endereco.cep = '';
+                    this.novo_endereco.num = '';
                     this.novo_endereco.complemento = '';
                 },
 
